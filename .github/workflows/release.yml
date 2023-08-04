@@ -4,9 +4,6 @@ on:
   push:
     branches: [ "main" ]
 
-env:
-  GH_TOKEN: ${{ github.token }}
-
 jobs:
   package:
     name: Package release
@@ -26,6 +23,8 @@ jobs:
       run: npm run build
 
     - name: package
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         git_hash=$(git rev-parse --short "$GITHUB_SHA")
         tar czvf app-${git_hash}.tar.gz package.json package-lock.json dist/*

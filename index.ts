@@ -1,4 +1,5 @@
 import express from "express";
+import morgan from "morgan";
 import os from "os";
 import page from "./template.js";
 
@@ -7,6 +8,8 @@ const port: number = Number(process.env.PORT) || 3000;
 
 const app = express();
 
+app.use(morgan("combined"))
+
 app.get("/", function (req, res) {
 	const result = {
 		host: hostname,
@@ -14,16 +17,20 @@ app.get("/", function (req, res) {
 	}
 
 	res.format({
-		"text/plain": function() {
+		"text/plain": function () {
 			res.json(result)
 		},
-		"application/json": function() {
+		"application/json": function () {
 			res.json(result)
 		},
-		"text/html": function() {
+		"text/html": function () {
 			res.send(template(page(result)))
 		}
 	})
+})
+
+app.get("/health", function (req, res) {
+	res.sendStatus(200);
 })
 
 app.listen(port, function () {

@@ -33,6 +33,26 @@ app.get("/health", function (req, res) {
 	res.sendStatus(200);
 })
 
+function fib(n: number): number {
+	if (n < 2)
+		return 1;
+	else return fib(n - 2) + fib(n - 1);
+}
+
+app.get("/fib", async function (req, res) {
+	const start = process.hrtime();
+	const { randomInt } = await import('node:crypto');
+	let rand = randomInt(30, 44);
+	let fibo = fib(rand);
+	const end = process.hrtime(start);
+
+	res.json({
+		n: rand,
+		fibonacci: fibo,
+		timeSeconds: (end[0] * 1e9 + end[1])/1e9,
+	})
+})
+
 app.listen(port, function () {
 	console.log(`Listening on port: ${port}`)
 })

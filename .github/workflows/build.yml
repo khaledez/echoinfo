@@ -37,8 +37,10 @@ jobs:
         run: |
           eval `ssh-agent -s`
           echo '${{ secrets.SSH_KEY }}' | tr -d '\r' | ssh-add - > /dev/null
+          ls -al $HOME/.ssh
+          
       - name: login and run
         run: |
-          DOCKER_HOST=${{ env.SSH_URL }}
+          export DOCKER_HOST=ssh://github@13.40.74.112
           echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
-          docker run -d -e PORT=80 -p 80:80 gcr.io/khaledez/echoinfo:latest
+          docker run -d -e PORT=80 -p 80:80 ghcr.io/khaledez/echoinfo:latest

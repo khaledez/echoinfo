@@ -33,3 +33,10 @@ jobs:
             ghcr.io/khaledez/echoinfo:${{ steps.image_version.outputs.githash }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: setup remote docker
+        run: ssh-add - <<< "${{ secrets.SSH_KEY }}"
+      - name: login and run
+        run: |
+          DOCKER_HOST=${{ env.SSH_URL }}
+          echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+          docker run -d -e PORT=80 -p 80:80 gcr.io/khaledez/echoinfo:latest

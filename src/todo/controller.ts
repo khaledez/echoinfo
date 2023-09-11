@@ -7,7 +7,3 @@ router.route("/").get(function (req, res) {
 });
 
 export default router;
-
-export function sum(a: number, b: number) {
-  return a + b;
-}

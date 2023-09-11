@@ -1,8 +1,15 @@
 import { describe, expect, test } from "@jest/globals";
-import { sum } from "./controller.js";
+import express from "express";
+import request from "supertest";
+import todo from "./controller.js";
 
-describe("sum module", () => {
-  test("adds 1 + 2 to equal 3", () => {
-    expect(sum(1, 2)).toBe(3);
+const app = express();
+app.use("/todo", todo);
+
+describe("ToDo Controller", () => {
+  test("get home /", async () => {
+    const res = await request(app).get("/todo");
+
+    expect(res.statusCode).toBe(200);
   });
 });

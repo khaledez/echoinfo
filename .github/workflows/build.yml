@@ -28,3 +28,4 @@ jobs:
             ghcr.io/khaledez/echoinfo:${{ steps.image_version.outputs.githash }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          push: true

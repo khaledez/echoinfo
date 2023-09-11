@@ -34,7 +34,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: setup remote docker
-        run: ssh-add - <<< "${{ secrets.SSH_KEY }}"
+        run: |
+          ssh-agent -s
+          ssh-add - <<< "${{ secrets.SSH_KEY }}"
       - name: login and run
         run: |
           DOCKER_HOST=${{ env.SSH_URL }}

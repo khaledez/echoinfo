@@ -2,7 +2,7 @@ name: Release application
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "some-branch" ]
 
 jobs:
   package:

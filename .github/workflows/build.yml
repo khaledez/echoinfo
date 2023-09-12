@@ -5,11 +5,13 @@ on:
     branches: ["main"]
 
 jobs:
-  do:
+  build-image:
     runs-on: ubuntu-latest
-    concurrency: build-docker-and-deploy
+    concurrency: build-docker
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
       - name: Set image version (tag)
         id: image_version
         run: echo "githash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
@@ -33,28 +35,9 @@ jobs:
             ghcr.io/khaledez/echoinfo:${{ steps.image_version.outputs.githash }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: setup ssh agent
-        run: |
-          mkdir -p $HOME/.ssh
-          echo '${{ secrets.SSH_KEY }}' > $HOME/.ssh/github.pem
-          chmod 600 $HOME/.ssh/github.pem
-          cat <<EOF > $HOME/.ssh/config
-          Host ${{ vars.INSTANCE_IP }}
-            HostName ${{ vars.INSTANCE_IP }}
-            IdentityFile      ~/.ssh/github.pem
-            StrictHostKeyChecking no
-            IdentitiesOnly    yes
-            ControlMaster     auto
-            ControlPath       ~/.ssh/control-%C
-            ControlPersist    yes
-          EOF
-          
-      - name: login and run
-        run: |
-          export DOCKER_HOST=ssh://github@${{ vars.INSTANCE_IP }}
-          echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
-          docker run -d -e PORT=80 -p 80:80 ghcr.io/khaledez/echoinfo:latest
-
-      - name: cleanup
-        if: always()
-        run: rm -rf $HOME/.ssh/github.pem
+  deploy-image:
+    needs: build-image
+    uses: ./.github/workflows/deploy.yml
+    with:
+      instance_ip: ${{ vars.INSTANCE_IP }}
+    secrets: inherit

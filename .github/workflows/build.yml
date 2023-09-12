@@ -35,12 +35,26 @@ jobs:
       #     cache-to: type=gha,mode=max
       - name: setup ssh agent
         run: |
-          eval `ssh-agent -s`
-          echo '${{ secrets.SSH_KEY }}' | tr -d '\r' | ssh-add - > /dev/null
-          ls -al $HOME/.ssh
+          mkdir -p $HOME/.ssh
+          echo '${{ secrets.SSH_KEY }}' > $HOME/.ssh/github.pem
+          chmod 600 $HOME/.ssh/github.pem
+          cat <<EOF > $HOME/.ssh/config
+          Host ${{ vars.INSTANCE_IP }}
+            HostName ${{ vars.INSTANCE_IP }}
+            IdentityFile      ~/.ssh/github.pem
+            StrictHostKeyChecking no
+            IdentitiesOnly    yes
+            ControlMaster     auto
+            ControlPath       ~/.ssh/control-%C
+            ControlPersist    yes
+          EOF
           
       - name: login and run
         run: |
-          export DOCKER_HOST=ssh://github@13.40.74.112
+          export DOCKER_HOST=ssh://github@${{ vars.INSTANCE_IP }}
           echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
           docker run -d -e PORT=80 -p 80:80 ghcr.io/khaledez/echoinfo:latest
+
+      - name: cleanup
+        if: always()
+        run: rm -rf $HOME/.ssh/github.pem

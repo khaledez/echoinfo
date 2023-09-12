@@ -11,4 +11,4 @@ ADD package* .
 RUN npm install --omit=dev
 COPY --from=build /usr/app/dist .
 
-CMD [ "/usr/bin/node", "/usr/app/index.js" ]
+CMD [ "/usr/local/bin/node", "/usr/app/index.js" ]

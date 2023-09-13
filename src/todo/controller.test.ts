@@ -11,5 +11,9 @@ describe("ToDo Controller", () => {
     const res = await request(app).get("/todo");
 
     expect(res.statusCode).toBe(200);
-  });
+  })
+
+  test("adds two numbers", () => {
+    expect(1+5).toBe(7);
+  })
 });

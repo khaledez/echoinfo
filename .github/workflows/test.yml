@@ -8,4 +8,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo Hello from a Pull Request
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      - name: prepare project dependendencies
+        run: |
+          npm ci
+      - name: run tests
+        run: npm run test

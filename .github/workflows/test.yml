@@ -8,4 +8,4 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo Hello from a Pull Request, this time should get triggerred
+      - run: node --version

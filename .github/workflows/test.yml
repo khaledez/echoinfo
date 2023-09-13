@@ -8,9 +8,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3.8.1
+        uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - run: node --version
-  
+      - name: prepare project dependendencies
+        run: |
+          npm ci
+      - name: run tests
+        run: npm run test

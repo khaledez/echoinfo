@@ -14,6 +14,6 @@ describe("ToDo Controller", () => {
   })
 
   test("adds two numbers", () => {
-    expect(1+5).toBe(7);
+    expect(1+5).toBe(6);
   })
 });

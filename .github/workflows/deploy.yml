@@ -17,29 +17,16 @@ jobs:
       - name: Set image version (tag)
         id: image_version
         run: echo "githash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: setup ssh agent
-        run: |
-          mkdir -p $HOME/.ssh
-          echo '${{ secrets.SSH_KEY }}' > $HOME/.ssh/github.pem
-          chmod 600 $HOME/.ssh/github.pem
-          cat <<EOF > $HOME/.ssh/config
-          Host ${{ inputs.instance_ip }}
-            HostName ${{ inputs.instance_ip }}
-            IdentityFile      ~/.ssh/github.pem
-            StrictHostKeyChecking no
-            IdentitiesOnly    yes
-            ControlMaster     auto
-            ControlPath       ~/.ssh/control-%C
-            ControlPersist    yes
-          EOF
+      - name: configure docker host
+        uses: khaledez/configure-docker-host@v1
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+          host: ${{ inputs.instance_ip }}
+          user: github
           
       - name: login and run
         run: |
-          export DOCKER_HOST=ssh://github@${{ inputs.instance_ip }}
           echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
           docker pull ghcr.io/khaledez/echoinfo:${{ steps.image_version.outputs.githash }}
           docker run -d -e PORT=80 -p 80:80 ghcr.io/khaledez/echoinfo:${{ steps.image_version.outputs.githash }}
 
-      - name: cleanup
-        if: always()
-        run: rm -rf $HOME/.ssh/github.pem

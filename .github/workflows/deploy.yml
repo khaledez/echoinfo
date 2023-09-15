@@ -36,5 +36,5 @@ jobs:
         run: |
           echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
           docker pull ghcr.io/khaledez/echoinfo:${{ inputs.image_version }}
-          docker run -d -e PORT=80 -p 80:80 ghcr.io/khaledez/echoinfo:${{ inputs.image_version }}
+          docker run -d -e PORT=80 -p 80:80 --restart always  ghcr.io/khaledez/echoinfo:${{ inputs.image_version }}
 

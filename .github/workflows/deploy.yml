@@ -5,6 +5,17 @@ on:
       instance_ip:
         type: string
         required: true
+      image_version:
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      instance_ip:
+        type: string
+        required: true
+      image_version:
+        type: string
+        required: true
 
 jobs:
   deploy:
@@ -14,9 +25,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 1
-      - name: Set image version (tag)
-        id: image_version
-        run: echo "githash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: configure docker host
         uses: khaledez/configure-docker-host@v1
         with:
@@ -27,6 +35,6 @@ jobs:
       - name: login and run
         run: |
           echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
-          docker pull ghcr.io/khaledez/echoinfo:${{ steps.image_version.outputs.githash }}
-          docker run -d -e PORT=80 -p 80:80 ghcr.io/khaledez/echoinfo:${{ steps.image_version.outputs.githash }}
+          docker pull ghcr.io/khaledez/echoinfo:${{ inputs.image_version }}
+          docker run -d -e PORT=80 -p 80:80 ghcr.io/khaledez/echoinfo:${{ inputs.image_version }}
 

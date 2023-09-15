@@ -8,6 +8,8 @@ jobs:
   build-image:
     runs-on: ubuntu-latest
     concurrency: build-docker
+    outputs:
+      image_version: ${{ steps.image_version.outputs.githash }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -40,4 +42,5 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       instance_ip: ${{ vars.INSTANCE_IP }}
+      image_version: ${{ needs.build-image.outputs.image_version }}
     secrets: inherit

@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "tsc --project . & node ./dist/index.js",
-		"dev": "nodemon --exec 'ts-node-esm ./src/index.ts'",
+		"dev": "nodemon --exec 'node --loader ts-node/esm ./src/index.ts'",
 		"build": "tsc --project .",
 		"test": "jest"
 	},

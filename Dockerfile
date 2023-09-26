@@ -5,6 +5,7 @@ RUN npm ci
 RUN npm run build
 
 FROM node:18-alpine
+LABEL org.opencontainers.image.source https://github.com/khaledez/echoinfo
 
 WORKDIR /usr/app
 ADD package* .

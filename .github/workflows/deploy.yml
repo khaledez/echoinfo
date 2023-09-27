@@ -17,12 +17,14 @@ on:
         type: string
         required: true
 
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
     concurrency: deploy-docker-echoinfo
     steps:
       - uses: actions/checkout@v3

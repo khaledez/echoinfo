@@ -10,6 +10,9 @@ app.use(morgan("combined"));
 app.get("/health", function (req, res) {
   res.sendStatus(200);
 });
+app.get("/", function (req, res) {
+  res.sendStatus(200);
+})
 
 app.use("/info", info);
 app.use("/todo", todo);

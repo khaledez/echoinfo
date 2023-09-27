@@ -56,5 +56,8 @@ jobs:
       - name: deploy
         run: |
           docker pull ghcr.io/khaledez/echoinfo:${{ inputs.image_version }}
-          docker run -d -e PORT=80 -p 80:80 --restart always  ghcr.io/khaledez/echoinfo:${{ inputs.image_version }}
+          docker compose --file docker-compose-prod.yml up -d --remove-orphans
+          docker system prune -af
+        env:
+          IMAGE_VERSION: ${{ inputs.image_version }}
 

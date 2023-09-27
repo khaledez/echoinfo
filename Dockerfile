@@ -6,7 +6,7 @@ RUN npm run build
 
 FROM node:18-alpine
 LABEL org.opencontainers.image.source https://github.com/khaledez/echoinfo
-
+RUN apk add --upgrade curl
 WORKDIR /usr/app
 ADD package* .
 RUN npm install --omit=dev
